@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import avatarImg from "../assets/avatar.png";
+import avatarImg from "../assets/images (2).jpg";
 
 export default function Profile({ user }) {
   const stats = useMemo(() => [

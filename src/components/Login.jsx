@@ -10,8 +10,7 @@ const Login = ({ setIsLoggedIn, setUser }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    // Focus email on mount
-    document.getElementById('email').focus();
+    document.getElementById('email')?.focus();
   }, []);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -34,24 +33,21 @@ const Login = ({ setIsLoggedIn, setUser }) => {
     }
 
     try {
-      // Load users from localStorage
       const users = JSON.parse(localStorage.getItem('users') || '[]');
 
       if (isSignup) {
-        // Signup: check if user exists
         if (users.find(u => u.email === email)) {
           setError('User already exists');
           setLoading(false);
           return;
         }
-        const hashedPassword = btoa(email + ':' + password); // Simple hash for demo
+        const hashedPassword = btoa(email + ':' + password);
         const newUser = { id: uuidv4(), email, password: hashedPassword, name: email.split('@')[0] };
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
         setUser(newUser);
         setIsLoggedIn(true);
       } else {
-        // Login: find user with hashed password
         const hashedPassword = btoa(email + ':' + password);
         const user = users.find(u => u.email === email && u.password === hashedPassword);
         if (!user) {
@@ -69,89 +65,135 @@ const Login = ({ setIsLoggedIn, setUser }) => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-container">
-        <div className="login-glass">
-          <h1 className="login-title">
-            {isSignup ? 'Create Account' : 'Welcome Back'}
-          </h1>
-          <p className="login-subtitle">
-            {isSignup ? 'Join CryptoDash today' : 'Enter your credentials'}
-          </p>
-          
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="login-input-wrapper">
-              <input
-                id="email"
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="login-input"
-                required
-              />
-              <span className="login-input-icon"></span>
-            </div>
-            <div className="login-input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="login-input"
-                id="password"
-                required
-          
-              />
-              <span className="login-input-icon">{showPassword ? "👁️" : "🙈        "}</span>
-              
-              <br></br>
-              <br />
+    <div
+      style={{
+        margin: 0,
+        height: "100vh",
+        fontFamily: "Segoe UI, sans-serif",
+        background: "linear-gradient(to top, #dfe9f3 0%, #ffffff 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <div
+        style={{
+          width: "320px",
+          padding: "30px 25px",
+          borderRadius: "20px",
+          backdropFilter: "blur(15px)",
+          background: "rgba(101, 93, 93, 0.2)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
+          textAlign: "center"
+        }}
+      >
+        <h1 style={{ marginBottom: "10px", fontSize: "20px" }}>
+          {isSignup ? "Create Account" : "Sign in with email"}
+        </h1>
 
-              <button
-                type="button"
-                className="pwd-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
+        <p style={{ fontSize: "12px", color: "#555", marginBottom: "20px" }}>
+          {isSignup ? "Join today" : "Enter your credentials"}
+        </p>
 
-
-                👁️
-
-
-              </button>
-            </div>
-            
-            {error && (
-              <div className="error-message">{error}</div>
-            )}
-            
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="login-button primary"
-            >
-              {loading ? 'Loading...' : (isSignup ? 'Create Account' : 'Sign In')}
-            </button>
-          </form>
-          
-          <div className="toggle-auth">
-            <span>
-              {isSignup ? 'Already have account?' : "Don't have an account?"}
-            </span>
-            <button 
-              type="button"
-              onClick={() => setIsSignup(!isSignup)}
-              className="toggle-button"
-            >
-              {isSignup ? 'Sign In' : 'Create Account'}
-            </button>
+        <form onSubmit={handleSubmit}>
+          {/* Email */}
+          <div style={{ marginBottom: "15px" }}>
+            <input
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "10px",
+                border: "none",
+                outline: "none",
+                background: "rgba(87, 81, 81, 0.6)"
+              }}
+            />
           </div>
-          
-          {isSignup && (
-            <div className="demo-note">
-              <small>Demo: Use test@example.com / password123</small>
+
+          {/* Password */}
+          <div style={{ marginBottom: "15px" }}>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "10px",
+                border: "none",
+                outline: "none",
+                background: "rgba(103, 94, 94, 0.6)"
+              }}
+            />
+
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#666",
+                marginTop: "5px",
+                cursor: "pointer"
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide Password" : "Show Password"}
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div style={{ color: "red", fontSize: "12px", marginBottom: "10px" }}>
+              {error}
             </div>
           )}
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: "10px",
+              border: "none",
+              background: "black",
+              color: "white",
+              cursor: "pointer"
+            }}
+          >
+            {loading
+              ? "Loading..."
+              : isSignup
+              ? "Create Account"
+              : "Get Started"}
+          </button>
+        </form>
+
+        {/* Toggle */}
+        <div style={{ marginTop: "15px", fontSize: "12px" }}>
+          <span>
+            {isSignup ? "Already have account?" : "Don't have an account?"}
+          </span>
+          <button
+            onClick={() => setIsSignup(!isSignup)}
+            style={{
+              marginLeft: "5px",
+              border: "none",
+              background: "transparent",
+              color: "blue",
+              cursor: "pointer"
+            }}
+          >
+            {isSignup ? "Sign In" : "Create Account"}
+          </button>
         </div>
       </div>
     </div>
